@@ -87,7 +87,7 @@ using coreTutorials.Models;
             WriteLiteral("                    ");
             EndContext();
             BeginContext(850, 700, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "d98f85064c754a9d8b8bfd7d0a830348", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "c8ad0fefc46746ad86a3afa8f03bf9af", async() => {
                 BeginContext(912, 109, true);
                 WriteLiteral("\r\n                        <tr>\r\n                            <td><input type=\"text\" name=\"CategoryId\" readonly");
                 EndContext();

@@ -5,7 +5,6 @@ D:\trung-sources\project\core-tutorials\core-tutorials\bin\Debug\netcoreapp2.1\c
 D:\trung-sources\project\core-tutorials\core-tutorials\bin\Debug\netcoreapp2.1\coreTutorials.pdb
 D:\trung-sources\project\core-tutorials\core-tutorials\bin\Debug\netcoreapp2.1\coreTutorials.Views.dll
 D:\trung-sources\project\core-tutorials\core-tutorials\bin\Debug\netcoreapp2.1\coreTutorials.Views.pdb
-D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\coreTutorials.csprojAssemblyReference.cache
 D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\coreTutorials.csproj.CoreCompileInputs.cache
 D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\coreTutorials.RazorAssemblyInfo.cache
 D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\coreTutorials.RazorAssemblyInfo.cs
@@ -39,3 +38,4 @@ D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\c
 D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\coreTutorials.dll
 D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\coreTutorials.pdb
 D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\coreTutorials.csproj.CopyComplete
+D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\coreTutorials.csprojAssemblyReference.cache

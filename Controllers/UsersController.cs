@@ -13,7 +13,8 @@ using Microsoft.Extensions.Primitives;
 namespace coreTutorials.Controllers
 {
     [Route("api/[controller]")]
-    [ValidateAntiForgeryToken]
+    //[ValidateAntiForgeryToken]
+    //[ValidateAntiForgeryToken]
     [ApiController]
     public class UsersController : ControllerBase
     {
@@ -26,19 +27,19 @@ namespace coreTutorials.Controllers
         }
 
         // GET: api/Users
-        [HttpGet]
-        public Dto GetUsers()
+        [HttpPost]
+        public Dto GetUsers(Dto dto)
         {
              _antiforgery.ValidateRequestAsync(HttpContext);
-            //StringValues xsrfToken;
-            //bool trydata = HttpContext.Request.Headers.TryGetValue("x-xsrf-token-header", out xsrfToken);
-            //    //.SingleOrDefault(header => header.Key.Equals("X-XSRF-TOKEN"));
-            //var token = _antiforgery.GetAndStoreTokens(HttpContext);
-            //if (token.RequestToken == xsrfToken.FirstOrDefault())
-            //{
-            //    return new Dto { Items = _context.Users, Count = _context.Users.Count() };
+            StringValues xsrfToken;
+            bool trydata = HttpContext.Request.Headers.TryGetValue("x-xsrf-token-header", out xsrfToken);
+            //.SingleOrDefault(header => header.Key.Equals("X-XSRF-TOKEN"));
+            var token = _antiforgery.GetAndStoreTokens(HttpContext);
+            if (token.RequestToken == xsrfToken.FirstOrDefault())
+            {
+                return new Dto { Items = _context.Users, Count = _context.Users.Count() };
 
-            //}
+            }
             //Response.Headers.Add("Content-Type", "application/json");
 
             return new Dto { Items = _context.Users, Count = _context.Users.Count() };
@@ -105,6 +106,7 @@ namespace coreTutorials.Controllers
 
         // POST: api/Users
         [HttpPost]
+        [Route("/add")]
         public async Task<IActionResult> PostUser([FromBody] User user)
         {
             if (!ModelState.IsValid)
@@ -147,6 +149,7 @@ namespace coreTutorials.Controllers
         {
             public IEnumerable<User> Items { get; set; }
             public long Count { get; set; }
+            public string _xsrf_token { get; set; }
 
         }
     }

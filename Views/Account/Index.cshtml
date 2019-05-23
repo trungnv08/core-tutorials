@@ -11,24 +11,19 @@
 <script src="~/js/ej2.min.js"></script>
 
 <h2>Index</h2>
-
+@Html.AntiForgeryToken()
 <div class="control-section">
     <div class="content-wrapper">
         <div id="Grid">
         </div>
     </div>
-    
+
 </div>
 <script type="text/javascript">
 
-    function extractContent(s) {
-        debugger;
-        var span = document.createElement('input');
-        span.innerHTML = s;
-        return span.value;
-    };
-
-    var xsrf='@Html.AntiForgeryToken()';
+    function getToken() {
+        return document.getElementsByName('_xsrf_token')[0].getAttribute('value');
+    }
     ej.grids.Grid.Inject(ej.grids.Selection, ej.grids.VirtualScroll, ej.grids.Sort, ej.grids.Filter, ej.grids.Edit, ej.grids.Toolbar);
     // debugger;
     function getCookie(cname) {
@@ -49,22 +44,52 @@
     var xsrf_token = getCookie("X-XSRF-TOKEN");
     var table = document.getElementById('datatable');
 
+    //custom adaptor
+    class customAdaptor extends ej.data.UrlAdaptor {
+
+        processQuery(dm, query, hierarchyFilters) {
+            console.log(JSON.stringify(dm));
+            var url = dm.dataSource.url;
+            var op = this.options;
+
+            if (this.options.requestType === "json") {
+                return {
+                    data: JSON.stringify({
+                        "_xsrf_token": getToken()
+                    }) ,
+                    url: url,
+                    ejPvtData: this.pvt,
+                    type: "POST",  //Changing request type from POST to GET
+                    contentType: "application/json; charset=utf-8"
+                }
+            }
+            //   tmp = this.convertToQueryString(req, query, dm);
+            //  tmp = (dm.dataSource.url.indexOf("?") !== -1 ? "&" : "/") + tmp;
+            return {
+                type: "POST",
+                data: JSON.stringify({
+                    "_xsrf_token": getToken()
+                }),
+                url: url,
+                ejPvtData: this.pvt
+            };
+        }
+
+        processResponse = ej.data.WebApiAdaptor.prototype.processResponse;
+
+    }
+
     var data_source = new ej.data.DataManager({
-        headers: [{
-            "X-XSRF-TOKEN-HEADER": xsrf_token
-        },
-        { "x-requested-with": " XMLHttpRequest" }],
+        //headers: [{
+        //    "X-XSRF-TOKEN-HEADER": getToken
+        //},
+        //{ "x-requested-with": " XMLHttpRequest" }],
         url: '/api/Users',
         insertUrl: "api/Users",
         removeUrl: "api/Users/{UserId}",
-        adaptor: new ej.data.WebApiAdaptor()
-    }).executeQuery(new ej.data.Query().addParams('_xsrf_token', xsrf_token))
-        .then(e => {
-            e.result.forEach(data => {
-                table.appendChild(ej.base.compiledFunction(data)[0]);
-            });
-        });;
-
+        requestType: "POST",
+        adaptor: new customAdaptor()
+    });
 
     console.log(data_source);
 

@@ -51,7 +51,8 @@ namespace core_tutorials
             services.AddAntiforgery(options =>
             {
                 options.FormFieldName = "_xsrf_token";
-                options.HeaderName = "x-xsrf-token-header";
+                options.HeaderName = null;
+                //options.HeaderName = "x-xsrf-token-header";
                 options.SuppressXFrameOptionsHeader = false;
             });
 
