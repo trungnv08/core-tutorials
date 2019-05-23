@@ -1,0 +1,177 @@
+﻿@model IEnumerable<coreTutorials.Models.User>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/material-full.css" rel="stylesheet" />
+<link href="~/css/fabric.css" rel="stylesheet" />
+<a href="~/css/font-face-full.ttf"></a>
+<script src="~/js/ej2.grid.js"></script>
+<script src="~/js/ej2.min.js"></script>
+
+<h2>Index</h2>
+
+<div class="control-section">
+    <div class="content-wrapper">
+        <div id="Grid">
+        </div>
+    </div>
+    
+</div>
+<script type="text/javascript">
+
+    function extractContent(s) {
+        debugger;
+        var span = document.createElement('input');
+        span.innerHTML = s;
+        return span.value;
+    };
+
+    var xsrf='@Html.AntiForgeryToken()';
+    ej.grids.Grid.Inject(ej.grids.Selection, ej.grids.VirtualScroll, ej.grids.Sort, ej.grids.Filter, ej.grids.Edit, ej.grids.Toolbar);
+    // debugger;
+    function getCookie(cname) {
+        var name = cname + "=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
+    var xsrf_token = getCookie("X-XSRF-TOKEN");
+    var table = document.getElementById('datatable');
+
+    var data_source = new ej.data.DataManager({
+        headers: [{
+            "X-XSRF-TOKEN-HEADER": xsrf_token
+        },
+        { "x-requested-with": " XMLHttpRequest" }],
+        url: '/api/Users',
+        insertUrl: "api/Users",
+        removeUrl: "api/Users/{UserId}",
+        adaptor: new ej.data.WebApiAdaptor()
+    }).executeQuery(new ej.data.Query().addParams('_xsrf_token', xsrf_token))
+        .then(e => {
+            e.result.forEach(data => {
+                table.appendChild(ej.base.compiledFunction(data)[0]);
+            });
+        });;
+
+
+    console.log(data_source);
+
+
+
+
+    var grid = new ej.grids.Grid({
+        dataSource: data_source,
+        toolbar: ['Add', 'Edit', 'Delete', 'Update', 'Cancel'],
+        //actionBegin: _actionBegin,
+        gridLines: 'Both',
+        allowPaging: true,
+        allowSelection: true,
+        allowFiltering: true,
+        allowSorting: true,
+        editSettings: { allowEditing: true, allowAdding: true, allowDeleting: true },
+        enableVirtualization: true,
+        filterSettings: { type: 'Menu' },
+        selectionSettings: { persistSelection: true, type: 'Multiple', checkboxOnly: true },
+        enableHover: false,
+        height: 600,
+        rowHeight: 38,
+        columns: [
+            {
+                type: 'checkbox', allowFiltering: false, allowSorting: false, width: '60'
+            },
+            {
+                field: 'UserId', visible: false, headerText: 'User ID', isPrimaryKey: true, width: '130'
+            },
+            {
+                field: 'Username', headerText: 'UserName', width: '200', clipMode: 'EllipsisWithTooltip',
+                filter: { type: 'CheckBox' }
+            },
+            {
+                field: 'FirstName', headerText: 'First Name', width: '200', clipMode: 'EllipsisWithTooltip',
+                filter: { type: 'CheckBox' }
+            },
+            {
+                field: 'LastName', headerText: 'Last Name', width: '200', clipMode: 'EllipsisWithTooltip',
+                filter: { type: 'CheckBox' }
+            },
+            {
+                field: 'IsActive', headerText: 'Active', width: '200', clipMode: 'EllipsisWithTooltip',
+                filter: { type: 'CheckBox' }
+            },
+            {
+                field: 'LastName', headerText: 'Last Name', visible: false, width: '200', clipMode: 'EllipsisWithTooltip',
+                filter: { type: 'CheckBox' }
+            }
+
+
+        ],
+        ClientSideEvents: function (args) {
+            console.log(args);
+        }
+
+    });
+
+    grid.appendTo("#Grid");
+</script>
+
+@*<table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Username)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.FirstName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.LastName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IsActive)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Password)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Username)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FirstName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LastName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IsActive)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Password)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.UserId">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.UserId">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.UserId">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>*@

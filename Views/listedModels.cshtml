@@ -1,0 +1,43 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@using coreTutorials.Models;
+@model IEnumerable<Category>;
+<script type="text/javascript">
+    function doSubmit(action,id) {
+        if ("remove" == action) {
+            //debugger;
+            $("#form_" + id).attr("action", "/Categories/remove");
+            $("#form_"+id).submit();
+        } else if ("update"==action) {
+           // debugger;
+            $("#form_" + id).attr("action", "/Categories/update");
+            $("#form_" + id).submit();
+        }
+    }
+</script>
+
+<div class="row">
+    <table class="table-hover active">
+        @{
+            <thead>
+
+            </thead>
+            <tbody>
+                @foreach (var category in Model)
+                {
+                    <form id="form_@category.CategoryId" action="/" method="post">
+                        <tr>
+                            <td><input type="text" name="CategoryId" readonly value="@category.CategoryId" read-only /></td>
+                            <td><input type="text" name="Name" value="@category.Name" /></td>
+                            <td> <span><button class="btn btn-toolbar" type="button" onclick="doSubmit('update',@category.CategoryId)">update</button></span></td>
+                            <td> <span><button class="btn btn-danger" type="button" onclick="doSubmit('remove',@category.CategoryId)">remove</button></span></td>
+                        </tr>
+                    </form>
+
+                }
+            </tbody>
+        }
+    </table>
+</div>

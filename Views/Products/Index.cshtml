@@ -1,0 +1,54 @@
+﻿@model ViewModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Products</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Product.Name)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Products)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ProductId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.ProductId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.ProductId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="row active">
+    <form asp-action="add" method="post">
+        <div class="form-group">
+            <label class="form-control" for="Product_Name">Product Name:</label>
+            <input class="form-control" asp-for="Product.Name" type="text" id="Product_Name" />
+
+        </div>
+        <div class="form-group">
+            <select asp-for="Product.Category.CategoryId">
+                @foreach (var item in Model.Categories)
+                {
+
+                    <option value="@item.CategoryId">@item.Name</option>
+                }
+            </select>
+        </div>
+        <button type="submit" class=" btn btn-success"> Create</button>
+    </form>
+</div>
+
