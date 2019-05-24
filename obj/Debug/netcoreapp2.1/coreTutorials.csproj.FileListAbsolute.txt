@@ -25,6 +25,7 @@ D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\R
 D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\Razor\Views\Home\Index.g.cshtml.cs
 D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\Razor\Views\Home\Privacy.g.cshtml.cs
 D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\Razor\Views\listedModels.g.cshtml.cs
+D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\Razor\Views\Manager\Index.g.cshtml.cs
 D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\Razor\Views\Products\Index.g.cshtml.cs
 D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\Razor\Views\Shared\Error.g.cshtml.cs
 D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\Razor\Views\Shared\_CookieConsentPartial.g.cshtml.cs

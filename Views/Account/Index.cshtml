@@ -1,4 +1,4 @@
-﻿@model IEnumerable<coreTutorials.Models.User>
+﻿@model IEnumerable<coreTutorials.Models.Users>
 
 @{
     ViewData["Title"] = "Index";
@@ -25,7 +25,6 @@
         return document.getElementsByName('_xsrf_token')[0].getAttribute('value');
     }
     ej.grids.Grid.Inject(ej.grids.Selection, ej.grids.VirtualScroll, ej.grids.Sort, ej.grids.Filter, ej.grids.Edit, ej.grids.Toolbar);
-    // debugger;
     function getCookie(cname) {
         var name = cname + "=";
         var decodedCookie = decodeURIComponent(document.cookie);
@@ -48,53 +47,44 @@
     class customAdaptor extends ej.data.UrlAdaptor {
 
         processQuery(dm, query, hierarchyFilters) {
-            console.log(JSON.stringify(dm));
-            var url = dm.dataSource.url;
-            var op = this.options;
-
-            if (this.options.requestType === "json") {
-                return {
-                    data: JSON.stringify({
-                        "_xsrf_token": getToken()
-                    }) ,
-                    url: url,
-                    ejPvtData: this.pvt,
-                    type: "POST",  //Changing request type from POST to GET
-                    contentType: "application/json; charset=utf-8"
-                }
+            var obj = new ej.data.UrlAdaptor().processQuery(dm, query, hierarchyFilters),
+                data = ej.data.DataUtil.parse.parseJson(obj.data),
+                result = {
+                };
+            if (data.param) for (var i = 0; i < data.param.length; i++) {
+                var param = data.param[i], key = Object.keys(param)[0];
+                result[key] = param[key];
             }
-            //   tmp = this.convertToQueryString(req, query, dm);
-            //  tmp = (dm.dataSource.url.indexOf("?") !== -1 ? "&" : "/") + tmp;
+            result.value = data
+            var token = {};
+            // addAntiForgeryToken(result);
+            token._xsrf_token = getToken();
+            var send = Object.keys(token).map(function (k) {
+                return encodeURIComponent(k) + '=' + encodeURIComponent(token[k])
+            }).join('&');
             return {
                 type: "POST",
-                data: JSON.stringify({
-                    "_xsrf_token": getToken()
-                }),
-                url: url,
-                ejPvtData: this.pvt
-            };
+                data: send,
+                url: dm.dataSource.url,
+                pvtData: dm.adaptor.pvt,
+                dataType: 'json',
+                contentType: "application/x-www-form-urlencoded; charset=UTF-8"
+            }
         }
-
-        processResponse = ej.data.WebApiAdaptor.prototype.processResponse;
-
+        processResponse(data, ds, query, xhr, request, changes) {
+            request.data = JSON.stringify(data);
+            console.log(data);
+            return ej.data.UrlAdaptor.prototype.processResponse.call(this, data, ds, query, xhr, request, changes)
+        }
     }
 
     var data_source = new ej.data.DataManager({
-        //headers: [{
-        //    "X-XSRF-TOKEN-HEADER": getToken
-        //},
-        //{ "x-requested-with": " XMLHttpRequest" }],
         url: '/api/Users',
         insertUrl: "api/Users",
         removeUrl: "api/Users/{UserId}",
         requestType: "POST",
         adaptor: new customAdaptor()
     });
-
-    console.log(data_source);
-
-
-
 
     var grid = new ej.grids.Grid({
         dataSource: data_source,
@@ -132,8 +122,8 @@
                 filter: { type: 'CheckBox' }
             },
             {
-                field: 'IsActive', headerText: 'Active', width: '200', clipMode: 'EllipsisWithTooltip',
-                filter: { type: 'CheckBox' }
+                headerText: 'Active', width: '200', clipMode: 'EllipsisWithTooltip',
+                template: '${FirstName} ${LastName}'
             },
             {
                 field: 'LastName', headerText: 'Last Name', visible: false, width: '200', clipMode: 'EllipsisWithTooltip',
@@ -150,53 +140,3 @@
 
     grid.appendTo("#Grid");
 </script>
-
-@*<table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Username)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.FirstName)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.LastName)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.IsActive)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Password)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Username)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.FirstName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.LastName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.IsActive)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Password)
-                    </td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.UserId">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.UserId">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.UserId">Delete</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>*@

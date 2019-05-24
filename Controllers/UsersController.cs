@@ -14,7 +14,7 @@ namespace coreTutorials.Controllers
 {
     [Route("api/[controller]")]
     //[ValidateAntiForgeryToken]
-    //[ValidateAntiForgeryToken]
+    [ValidateAntiForgeryToken]
     [ApiController]
     public class UsersController : ControllerBase
     {
@@ -28,7 +28,7 @@ namespace coreTutorials.Controllers
 
         // GET: api/Users
         [HttpPost]
-        public Dto GetUsers(Dto dto)
+        public Dto GetUsers()
         {
              _antiforgery.ValidateRequestAsync(HttpContext);
             StringValues xsrfToken;
@@ -37,12 +37,12 @@ namespace coreTutorials.Controllers
             var token = _antiforgery.GetAndStoreTokens(HttpContext);
             if (token.RequestToken == xsrfToken.FirstOrDefault())
             {
-                return new Dto { Items = _context.Users, Count = _context.Users.Count() };
+                return new Dto { result = _context.Users, count = _context.Users.Count() };
 
             }
             //Response.Headers.Add("Content-Type", "application/json");
 
-            return new Dto { Items = _context.Users, Count = _context.Users.Count() };
+            return new Dto { result = _context.Users, count = _context.Users.Count() };
         }
         //[HttpGet("{top}")]
         //public IEnumerable<User> GetUsers(int top)
@@ -71,7 +71,7 @@ namespace coreTutorials.Controllers
 
         // PUT: api/Users/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser([FromRoute] long id, [FromBody] User user)
+        public async Task<IActionResult> PutUser([FromRoute] long id, [FromBody] Users user)
         {
             if (!ModelState.IsValid)
             {
@@ -107,7 +107,7 @@ namespace coreTutorials.Controllers
         // POST: api/Users
         [HttpPost]
         [Route("/add")]
-        public async Task<IActionResult> PostUser([FromBody] User user)
+        public async Task<IActionResult> PostUser([FromBody] Users user)
         {
             if (!ModelState.IsValid)
             {
@@ -147,8 +147,8 @@ namespace coreTutorials.Controllers
         }
         public class Dto
         {
-            public IEnumerable<User> Items { get; set; }
-            public long Count { get; set; }
+            public IEnumerable<Users> result { get; set; }
+            public long count { get; set; }
             public string _xsrf_token { get; set; }
 
         }

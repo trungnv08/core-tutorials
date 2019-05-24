@@ -12,7 +12,7 @@ namespace coreTutorials.Models
         public Category Category { get; set; }
         public Product Product { get; set; }
         public SessionModel SessionModel { get; set; }
-        public IEnumerable<User> Users { get; set; }
-        public User User { get; set; }
+        public IEnumerable<Users> Users { get; set; }
+        public Users User { get; set; }
     }
 }

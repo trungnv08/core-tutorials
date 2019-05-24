@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -13,6 +14,10 @@ namespace coreTutorials.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Int64 ProductId { get; set; }
         public String Name { get; set; }
+        [ForeignKey("Categories")]
+        public Int64 CategoryId { get; set; }
+
+        [JsonIgnore]
         public virtual Category Category { get; set; }
     }
 }

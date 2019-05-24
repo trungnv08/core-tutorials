@@ -40,15 +40,16 @@ namespace coreTutorials.Controllers
         }
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> Login(User user)
+        public async Task<IActionResult> Login(Users user,string returnUrl)
         {
+            
             if (IsAuthenticated(user))
             {
 
                 List<Claim> claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, user.Username),
-                    new Claim(ClaimTypes.Expiration,DateTime.UtcNow.AddSeconds(30).ToString()),
+                    new Claim(ClaimTypes.Expiration,DateTime.UtcNow.AddMinutes(30).ToString()),
                     new Claim(ClaimTypes.Email, user.Username)
                 };
 
@@ -68,7 +69,7 @@ namespace coreTutorials.Controllers
                             //ExpiresUtc = DateTime.UtcNow.AddMinutes(1)
                         });
 
-                return Redirect("/Account");
+                return Redirect("/Manager");
             }
             var count = SessionHelpers.getObject<int>(HttpContext.Session, "login_failed");
             count += 1;
@@ -104,10 +105,10 @@ namespace coreTutorials.Controllers
 
 
 
-        private bool IsAuthenticated(User user)
+        private bool IsAuthenticated(Users user)
         {
             bool result = false;
-            var tmp = dbContext.Users.SingleOrDefault<User>(us => us.Username == user.Username && us.Password == user.Password && us.IsActive == true);
+            var tmp = dbContext.Users.SingleOrDefault<Users>(us => us.Username == user.Username && us.Password == user.Password && us.IsActive == true);
             if (tmp != null)
             {
                 result = true;

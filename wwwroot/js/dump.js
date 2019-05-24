@@ -239,3 +239,81 @@ return {
 };
             }
         })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//#region cej2 grid
+function getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
+var xsrf_token = getCookie("X-XSRF-TOKEN");
+var table = document.getElementById('datatable');
+
+//custom adaptor
+class customAdaptor extends ej.data.UrlAdaptor {
+
+    processQuery(dm, query, hierarchyFilters) {
+        var obj = new ej.data.UrlAdaptor().processQuery(dm, query, hierarchyFilters),
+            data = ej.data.DataUtil.parse.parseJson(obj.data),
+            result = {
+            };
+        if (data.param) for (var i = 0; i < data.param.length; i++) {
+            var param = data.param[i], key = Object.keys(param)[0];
+            result[key] = param[key];
+        }
+        result.value = data
+        var token = {};
+        // addAntiForgeryToken(result);
+        token._xsrf_token = getToken();
+        var send = Object.keys(token).map(function (k) {
+            return encodeURIComponent(k) + '=' + encodeURIComponent(token[k])
+        }).join('&');
+        return {
+            type: "POST",
+            data: send,
+            url: dm.dataSource.url,
+            pvtData: dm.adaptor.pvt,
+            dataType: 'json',
+            contentType: "application/x-www-form-urlencoded; charset=UTF-8"
+        }
+    }
+    processResponse(data, ds, query, xhr, request, changes) {
+        request.data = JSON.stringify(data);
+        console.log(data);
+        return ej.data.UrlAdaptor.prototype.processResponse.call(this, data, ds, query, xhr, request, changes)
+    }
+}
+
+var data_source = new ej.data.DataManager({
+    url: '/api/Products',
+    //insertUrl: "api/Users",
+    //removeUrl: "api/Users/{UserId}",
+    requestType: "POST",
+    adaptor: new customAdaptor()
+});
+//#endregion

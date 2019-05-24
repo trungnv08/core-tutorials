@@ -57,10 +57,11 @@ namespace core_tutorials
             });
 
             //config to first uppercase json data return  from api
-            services.AddMvc().AddJsonOptions(options =>
-            {
-                options.SerializerSettings.ContractResolver = new DefaultContractResolver();
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            //services.AddMvc().AddJsonOptions(options =>
+            //{
+            //    options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+            //});
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             //add cookies authentication
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
