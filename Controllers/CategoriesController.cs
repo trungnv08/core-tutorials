@@ -13,8 +13,8 @@ namespace coreTutorials.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
-    // [ValidateAntiForgeryToken]
+    [Authorize]
+     //[ValidateAntiForgeryToken]
     public class CategoriesController : ControllerBase
     {
         //private readonly MyDbContext _dbContext;

@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using FluentValidation;
+using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -22,11 +23,22 @@ namespace coreTutorials.Models
         [BsonElement("last_name")]
         public string LastName { get; set; }
         [BsonElement("is_active")]
+        [BsonDefaultValue(true)]
         public bool IsActive { get; set; }
         [BsonElement("password")]
         public string Password { get; set; }
         [BsonIgnore]
         public string FullName { get { return $"{FirstName} {LastName}"; } }
 
+    }
+    public class UsersValidator : AbstractValidator<Users>
+    {
+        public UsersValidator()
+        {
+            RuleFor(user => user.Username).NotEmpty();
+            RuleFor(user => user.Password).NotEmpty().MinimumLength(6);
+            RuleFor(user => user.FirstName).NotEmpty();
+            RuleFor(user => user.LastName).NotEmpty();
+        }
     }
 }

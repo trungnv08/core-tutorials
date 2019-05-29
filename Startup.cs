@@ -16,6 +16,8 @@ using Microsoft.AspNetCore.Identity;
 using coreTutorials.Controllers;
 using Newtonsoft.Json.Serialization;
 using Microsoft.AspNetCore.Antiforgery;
+using FluentValidation.AspNetCore;
+using coreTutorials.Models;
 
 namespace core_tutorials
 {
@@ -61,7 +63,8 @@ namespace core_tutorials
             //{
             //    options.SerializerSettings.ContractResolver = new DefaultContractResolver();
             //});
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<UsersValidator>())  //add fluent Validation
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             //add cookies authentication
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>

@@ -28,6 +28,23 @@ namespace coreTutorials.Controllers
             return View(users);
         }
         [AllowAnonymous]
+        public IActionResult Register()
+        {
+            return View();
+        }
+        [HttpPost]
+        [AllowAnonymous]
+        public IActionResult Register(Users user)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("Register", user);
+            }
+            _dbContext.Users.InsertOne(user);
+            TempData["notice"] = "Person successfully created";
+            return RedirectToAction("Index");
+        }
+        [AllowAnonymous]
         public IActionResult Login(string ReturnUrl)
         {
             var count = SessionHelpers.getObject<int>(HttpContext.Session, "login_failed");
