@@ -1,0 +1,119 @@
+﻿<div class="row">
+    <div class="col-sm-6 col-sm-offset-3">
+        <div class="page-header">
+            <h1 class="text-center">
+                Dynamic Bootstrap Modal
+                Content with Knockout
+            </h1>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="well col-sm-6 col-sm-offset-3">
+        <p>
+            This is a demonstration of how to use
+            <a href="http://knockoutjs.com/" target="_blank">
+                Knockout.js
+            </a>
+            with
+            <a href="http://getbootstrap.com/" target="_blank">
+                Twitter Bootstrap
+            </a>
+            to edit a collection of items. This code also uses the
+            <a href="https://github.com/jschr/bootstrap-modal" target="_blank">
+                Bootstrap Modal
+            </a> plugin to assist with creating modal windows.
+        </p>
+        <p>
+            This code demonstrates the following:
+        </p>
+        <ul>
+            <li>
+                Basic <abbr title="Create, Read, Update, and Delete">CRUD</abbr> operations on a collection of data
+            </li>
+            <li>
+                Using modal dialogs for adding and editing idividual items
+            </li>
+            <li>
+                Performing simple object validation when adding/editing items
+            </li>
+            <li>
+                Dynamic modal content when using Knockout.js
+            </li>
+        </ul>
+        <p class="text-muted">
+            <strong>Note:</strong> For anything other than very basic validation, you should consider using the excellent
+            <a href="https://github.com/Knockout-Contrib/Knockout-Validation" target="_blank" title="A validation library for Knockout JS">
+                Knockout Validation
+            </a> library.
+        </p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-6 col-sm-offset-3">
+        <button type="button" class="btn btn-success btn-sm pull-right"
+                data-bind="click: AddNewUser">
+            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+            Add New User
+        </button>
+        <h2 style="margin-top: 0px;">
+            Users
+            <span class="badge" data-bind="text: Users().length"></span>
+        </h2>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-6 col-sm-offset-3">
+        <ul data-bind="foreach: Users" class="list-group hover">
+            <li class="list-group-item">
+                <div class="row">
+                    <div class="col-xs-6">
+                        <span data-bind="text: Name" style="word-wrap: break-word;"></span>
+                    </div>
+                    <div class="col-xs-2">
+                        <span data-bind="text: Age() + ' yrs old'" class="badge"></span>
+                    </div>
+                    <div class="col-xs-4 text-right">
+                        <a href="#" data-bind="click: $parent.EditUser">Edit</a> |
+                        <a href="#" data-bind="click: $parent.DeleteUser">Delete</a>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div data-bind="modal: UserBeingEdited" class="fade" role="dialog" tabindex="-1">
+    <form data-bind="submit: $root.SaveUser">
+        <div class="modal-header">
+            <a class="close" data-dismiss="modal">×</a>
+            <h3>User Details</h3>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="NameInput">Name</label>
+                <input type="text" class="form-control" id="NameInput" placeholder="User's name"
+                       data-bind="value: UserBeingEdited() && UserBeingEdited().Name, valueUpdate: 'afterkeydown'">
+            </div>
+            <div class="form-group">
+                <label for="AgeInput">Age</label>
+                <input type="text" class="form-control" id="AgeInput" placeholder="User's age"
+                       data-bind="value: UserBeingEdited() && UserBeingEdited().Age, valueUpdate: 'afterkeydown'">
+            </div>
+            <!-- ko if: ValidationErrors() && ValidationErrors().length > 0 -->
+            <div class="alert alert-danger" style="margin: 20px 0 0">
+                Please correct the following errors:
+                <ul data-bind="foreach: { data: ValidationErrors, as: 'errorMessage' }">
+                    <li data-bind="text: errorMessage"></li>
+                </ul>
+            </div>
+            <!-- /ko -->
+        </div>
+        <div class="modal-footer">
+            <button type="button" data-dismiss="modal" class="btn btn-default">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+    </form>
+</div>

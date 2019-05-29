@@ -40,3 +40,6 @@ D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\c
 D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\coreTutorials.pdb
 D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\coreTutorials.csproj.CopyComplete
 D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\Razor\Views\Account\Register.g.cshtml.cs
+D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\coreTutorials.csprojAssemblyReference.cache
+D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\Razor\Views\Manager\Categories.g.cshtml.cs
+D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\Razor\Views\Manager\Products.g.cshtml.cs
