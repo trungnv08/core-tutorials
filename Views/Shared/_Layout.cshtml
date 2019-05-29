@@ -1,10 +1,18 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
+    @using Microsoft.AspNetCore.Http
+    @using coreTutorials.DAL
+    @inject IHttpContextAccessor HttpContextAccessor
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - core_tutorials</title>
-
+    <link href="~/css/material-full.css" rel="stylesheet" />
+    <link href="~/css/fabric.css" rel="stylesheet" />
+    <a href="~/css/font-face-full.ttf"></a>
+    <script src="~/js/ej2.grid.js"></script>
+    <script src="~/js/ej2.min.js"></script>
+    <script src="~/js/knockout-3.5.0.js"></script>
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.css" />
@@ -37,9 +45,21 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
                     <li><a asp-area="" asp-controller="Account" asp-action="Index">Account</a></li>
                     <li><a asp-area="" asp-controller="Manager" asp-action="Index">Manager</a></li>
+                    <li><a asp-area="" asp-controller="Manager" asp-action="Categories">Categories</a></li>
+                    @{
+                        if (!@SessionHelpers.GetObject<bool>(HttpContextAccessor.HttpContext.Session, "_isLogedin"))
+                        {
+                            <li><a asp-area="" asp-controller="Account" asp-action="Login">Login</a></li>
+
+                        }
+                        else
+                        {
+
+                            <li><a asp-area="" asp-controller="Account" asp-action="signout">LogOut</a></li>
+                        }
+                    }
                 </ul>
-                <a asp-area="" asp-controller="Account" asp-action="Login">Login</a>
-                <a asp-area="" asp-controller="Account" asp-action="signout">LogOut</a>
+
                 @* <partial    name="_LoginPartial.cshtml"/>*@
             </div>
         </div>

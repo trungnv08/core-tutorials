@@ -47,7 +47,18 @@ namespace coreTutorials.Controllers
         [AllowAnonymous]
         public IActionResult Login(string ReturnUrl)
         {
-            var count = SessionHelpers.getObject<int>(HttpContext.Session, "login_failed");
+            var isLoggedIn = SessionHelpers.GetObject<bool>(HttpContext.Session, "_isLogedin");
+            if (isLoggedIn)
+            {
+                //clear count
+                SessionHelpers.SetObject<int>(HttpContext.Session, "login_failed", 0);
+                if (string.IsNullOrEmpty(ReturnUrl))
+                {
+                    ReturnUrl = "/";
+                }
+                return Redirect($"{ReturnUrl}");
+            }
+            var count = SessionHelpers.GetObject<int>(HttpContext.Session, "login_failed");
             if (count > 3)
             {
                 return View();
@@ -86,13 +97,14 @@ namespace coreTutorials.Controllers
                             //IsPersistent = true, // for 'remember me' feature
                             //ExpiresUtc = DateTime.UtcNow.AddMinutes(1)
                         });
+                SessionHelpers.SetObject<bool>(HttpContext.Session, "_isLogedin", true);
                 if (string.IsNullOrEmpty(ReturnUrl))
                 {
                     ReturnUrl = "/Account";
                 }
                 return Redirect($"{ReturnUrl}");
             }
-            var count = SessionHelpers.getObject<int>(HttpContext.Session, "login_failed");
+            var count = SessionHelpers.GetObject<int>(HttpContext.Session, "login_failed");
             count += 1;
             SessionHelpers.SetObject<int>(HttpContext.Session, "login_failed", count);
 
@@ -104,6 +116,8 @@ namespace coreTutorials.Controllers
         public async Task<IActionResult> LogOut()
         {
             await HttpContext.SignOutAsync(scheme: CookieAuthenticationDefaults.AuthenticationScheme);
+            //clear session
+            SessionHelpers.SetObject<bool>(HttpContext.Session, "_isLogedin", false);
             return Redirect("/Account/Login");
         }
         [Authorize]
@@ -118,7 +132,7 @@ namespace coreTutorials.Controllers
         private bool IsAuthenticated(Users user)
         {
             bool result = false;
-            var tmp = _dbContext.Users.Find(us => us.Username == user.Username && us.Password == user.Password && us.IsActive == true).FirstOrDefault();
+            var tmp = _dbContext.Users.Find(us => us.Username == user.Username && us.Password == user.Password).FirstOrDefault();
             if (tmp != null)
             {
                 result = true;

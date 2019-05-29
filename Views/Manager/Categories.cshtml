@@ -1,20 +1,22 @@
 ﻿
 @{
+    ViewData["Title"] = "Categories";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@*@model IEnumerable<coreTutorials.Models.Category>*@
+
+@{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-@*<link href="~/css/material-full.css" rel="stylesheet" />
-<link href="~/css/fabric.css" rel="stylesheet" />
-<a href="~/css/font-face-full.ttf"></a>
-<script src="~/js/ej2.grid.js"></script>
-<script src="~/js/ej2.min.js"></script>
-<script src="~/js/knockout-3.5.0.js"></script>*@
-<h2>Manage Centre</h2>
+
+<h2>Category Manager</h2>
 
 @Html.AntiForgeryToken()
 <div class="control-section">
     <div class="content-wrapper">
-        <input type="text" tabindex="1" id='ddlelement' />
+        <button type="button" class="btn btn-success" tabindex="1" id='add' >Add</button>
         <div id="Grid">
 
         </div>
@@ -30,22 +32,19 @@
                     <div class="modal-body">
                         <form>
                             <div class="form-group">
-                                <input class="form-control" id="ProductId" name="ProductId" data-bind="value: ProductId" type="hidden" />
+                                <input class="form-control" id="CategoryId" name="CategoryId" data-bind="value: CategoryId" type="hidden" />
                             </div>
                             <div class="form-group">
-                                <label class="form-control" for="ProductName"> Product Name:</label>
+                                <label class="form-control" for="ProductName"> Category Name:</label>
                                 <input class="form-control" id="ProductName" name="Name" data-bind="textInput: Name" />
-                            </div>
-                            <div class="form-group">
-                                <input type="text" tabindex="1" id='ddlModal' />
                             </div>
 
                         </form>
                     </div>
                     <div class="modal-footer">
-                        @*  <button id="addProduct" class="btn btn-success">ADD</button>*@
-                        <button id="updateProduct" class="btn btn-primary" click="updateProduct()">save</button>
-                        <button id="deleteProduct" class="btn btn-danger">Remove</button>
+                        <button data-bind="visible:(action()==0)" id="addCate" class="btn btn-success">ADD</button>
+                        <button data-bind="visible:(action()==1)" id="updateCate" class="btn btn-primary" click="updateProduct()">save</button>
+                        <button data-bind="visible:(action()==1)" id="deleteCate" class="btn btn-danger">Remove</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     </div>
                 </div>
@@ -62,25 +61,10 @@
     var option = {};
     var modal_Cate = {};
     var dd_source = {};
-    //var data_source = {};
-    var ddlModal = new ej.dropdowns.DropDownList({
-        //bind the data manager instance to dataSource property
-        dataSource: dd_source,
-        //map the appropriate columns to fields property
-        fields: { text: 'name', value: 'categoryId' },
-        //set the placeholder to DropDownList input
-        placeholder: "Select an Category",
-        //sort the resulted items
-        sortOrder: 'Ascending',
-    });
 
-
-
-
-    //add first
-    ddlModal.appendTo("#ddlModal");
     var modalView = {
-        ProductId: ko.observable(""),
+        action: ko.observable(0),
+        CategoryId: ko.observable(""),
         Name: ko.observable("")
     }
     ko.applyBindings(modalView);
@@ -104,54 +88,6 @@
 
 
 
-    //#region binding data to dropdown-list
-    //get dropdown-list data using ajax. store this using for dialog update
-
-    $.ajax({
-        type: 'POST',
-        url: '/api/Categories',
-        data: serialize({ _xsrf_token: getToken() })
-    }).done(function (res) {
-        dd_source = res['result'];
-
-        ddlObject.dataSource = dd_source;
-        ddlModal.dataSource = dd_source;
-
-    });
-
-    var ddlObject = new ej.dropdowns.DropDownList({
-        //bind the data manager instance to dataSource property
-        dataSource: dd_source,
-        //map the appropriate columns to fields property
-        fields: { text: 'name', value: 'categoryId' },
-        //set the placeholder to DropDownList input
-        placeholder: "Select an Category",
-        //sort the resulted items
-        sortOrder: 'Ascending',
-        //event select ddl
-        change: ddl_change_listener
-    });
-
-    //render the component
-    ddlObject.appendTo('#ddlelement');
-
-    //change event listener of dropdown list
-    function ddl_change_listener(args) {
-        if (!args.itemData || (typeof args.itemData == typeof 'undefined')) {
-            return;
-        }
-        var selected = args.itemData['categoryId'];
-        var url = '/api/Products/' + selected;
-        grid.dataSource.dataSource.url = url;
-        grid.refresh();
-    }
-
-    //#endregion
-
-
-
-
-
     //#region grids
     //#region modal
     //event of ddl in modal
@@ -159,42 +95,58 @@
         if (!args.itemData || (typeof args.itemData == typeof 'undefined')) {
             return;
         }
-        //modal_product.CategoryId = args.itemData['categoryId'];
     }
-
-    $('body').on('click', '#updateProduct', function () {
-        //var modal = $('#viewModal');
-        //modal_product.ProductId = modal.find("#ProductId").val();
-        //modal_product.Name = modal.find("#ProductName").val();
-        modal_Cate.ProductId = modalView.ProductId();
+    $('body').on('click', '#add', function () {
+        modalView.action(0);
+        $('#viewModal').modal('show');
+    });
+    $('body').on('click', '#addCate', function () {
+        modal_Cate.CategoryId = "";
         modal_Cate.Name = modalView.Name();
-        modal_Cate.CategoryId = ddlModal.value;
         modal_Cate['_xsrf_token'] = getToken();
         $.ajax({
             type: 'POST',
-            url: '/api/Products/update',
-            // data: serialize(modal_product),
+            url: '/api/Categories/add',
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify(modal_Cate),
+            success: function (res) {
+                debugger;
+                //var url = '/api/Categories/' + ddlModal.value;
+                //grid.dataSource.dataSource.url = url;
+                grid.refresh();
+                $('#viewModal').modal('hide');
+            }
+        }).done();
+    });
+    $('body').on('click', '#updateCate', function () {
+        modal_Cate.CategoryId = modalView.CategoryId();
+        modal_Cate.Name = modalView.Name();
+        modal_Cate['_xsrf_token'] = getToken();
+        $.ajax({
+            type: 'POST',
+            url: '/api/Categories/update',
             dataType: 'json',
             contentType: 'application/json',
             data: JSON.stringify(modal_Cate)
         }).done(function (res) {
-            var url = '/api/Products/' + ddlModal.value;
+            var url = '/api/Categories/' + ddlModal.value;
             grid.dataSource.dataSource.url = url;
             grid.refresh();
             $('#viewModal').modal('hide');
         });
     });
-    $('body').on('click', '#deleteProduct', function () {
+    $('body').on('click', '#deleteCate', function () {
         var modal = $('#viewModal');
         modal_Cate['_xsrf_token'] = getToken();
         $.ajax({
             type: 'POST',
-            url: '/api/Products/delete/' + modal.find("#ProductId").val(),
+            url: '/api/Categories/delete/' + modal.find("#CategoryId").val(),
             data: serialize(modal_Cate),
         }).done(function (res) {
             console.log(res);
             //reload grid data
-            var url = '/api/Products/' + ddlModal.value;
+            var url = '/api/Categories/' + ddlModal.value;
             grid.dataSource.dataSource.url = url;
             grid.refresh();
             modal.modal('hide');
@@ -202,26 +154,17 @@
         });
     });
 
-    //ko
-    function setData(args) {
-        this.ProductId = args.productId;
-        this.CategoryId = args.categoryId;
-        this.Name = args.name;
-    }
 
     //view action
     function viewClick(args) {
         var rowObj = grid.getRowObjectFromUID(args.target.closest('.e-row').getAttribute('data-uid'));
         var data = rowObj.data;
-        ddlModal.value = data.categoryId;
-        modalView.ProductId(data.productId)
+        //ddlModal.value = data.categoryId;
+        modalView.CategoryId(data.CategoryId)
         modalView.Name(data.name);
-        //$('#ProductId').val(data.productId);
-        //$('#ProductName').val(data.name);
+        modalView.action(1);
         $('#viewModal').modal('show');
 
-        //ko.applyBindings(setData(data));
-        //console.log(data);
     }
     //#endregion
 
@@ -246,7 +189,7 @@
             var send = Object.keys(token).map(function (k) {
                 return encodeURIComponent(k) + '=' + encodeURIComponent(token[k])
             }).join('&');
-           // debugger;
+            // debugger;
             return {
                 type: "POST",
                 data: send,
@@ -263,7 +206,7 @@
         }
     }
     var data_source = new ej.data.DataManager({
-        url: 'api/Products/0',
+        url: '/api/Categories',
         requestType: "POST",
         adaptor: new customAdaptor()
     });
@@ -283,20 +226,9 @@
         selectionSettings: { persistSelection: true, type: 'Multiple', checkboxOnly: false },
         enableHover: true,
         height: 480,
-        //rowHeight: 38,
-        //load: () => {
-        //    var rowHeight = grid.getRowHeight();  //height of the each row
-        //    var gridHeight = grid.height;
-        //    var pageSize = grid.pageSettings.pageSize;   //initial page size
-        //    var pageResize = (gridHeight - (pageSize * rowHeight)) / rowHeight; //new page size is obtained here
-        //    grid.pageSettings.pageSize = pageSize + Math.round(pageResize);
-        //},
         columns: [
-            //{
-            //    type: 'checkbox', allowFiltering: false, allowSorting: false, width: '60'
-            //},
             {
-                field: 'productId', visible: false, headerText: 'Product ID', isPrimaryKey: true, width: '130'
+                field: 'categoryId', visible: false, headerText: 'Category ID', isPrimaryKey: true, width: '130'
             },
             {
                 field: 'name', headerText: 'Name', width: '200', clipMode: 'EllipsisWithTooltip',
@@ -317,4 +249,3 @@
 
     //#endregion
 </script>
-
