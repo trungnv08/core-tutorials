@@ -1,0 +1,320 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/material-full.css" rel="stylesheet" />
+<link href="~/css/fabric.css" rel="stylesheet" />
+<a href="~/css/font-face-full.ttf"></a>
+<script src="~/js/ej2.grid.js"></script>
+<script src="~/js/ej2.min.js"></script>
+<script src="~/js/knockout-3.5.0.js"></script>
+<h2>Manage Centre</h2>
+
+@Html.AntiForgeryToken()
+<div class="control-section">
+    <div class="content-wrapper">
+        <input type="text" tabindex="1" id='ddlelement' />
+        <div id="Grid">
+
+        </div>
+        <div class="modal" tabindex="-1" role="dialog" id="viewModal" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Product</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <input class="form-control" id="ProductId" name="ProductId" data-bind="value: ProductId" type="hidden" />
+                            </div>
+                            <div class="form-group">
+                                <label class="form-control" for="ProductName"> Product Name:</label>
+                                <input class="form-control" id="ProductName" name="Name" data-bind="textInput: Name" />
+                            </div>
+                            <div class="form-group">
+                                <input type="text" tabindex="1" id='ddlModal' />
+                            </div>
+
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        @*  <button id="addProduct" class="btn btn-success">ADD</button>*@
+                        <button id="updateProduct" class="btn btn-primary" click="updateProduct()">save</button>
+                        <button id="deleteProduct" class="btn btn-danger">Remove</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    //#region variable define
+    ej.grids.Grid.Inject(ej.grids.Selection, ej.grids.VirtualScroll, ej.grids.Sort, ej.grids.Filter, ej.grids.Edit, ej.grids.Toolbar);
+
+    var option = {};
+    var modal_product = {};
+    var dd_source = {};
+    //var data_source = {};
+    var ddlModal = new ej.dropdowns.DropDownList({
+        //bind the data manager instance to dataSource property
+        dataSource: dd_source,
+        //map the appropriate columns to fields property
+        fields: { text: 'name', value: 'categoryId' },
+        //set the placeholder to DropDownList input
+        placeholder: "Select an Category",
+        //sort the resulted items
+        sortOrder: 'Ascending',
+    });
+
+
+
+
+    //add first
+    ddlModal.appendTo("#ddlModal");
+    var modalView = {
+        ProductId: ko.observable(""),
+        Name: ko.observable("")
+    }
+    ko.applyBindings(modalView);
+    //#endregion
+
+
+    //#region util function
+    //get xsrf token
+    function getToken() {
+        return document.getElementsByName('_xsrf_token')[0].getAttribute('value');
+    }
+    //parse Object to urlencoded params
+    function serialize(data) {
+        return Object.keys(data).map(function (k) {
+            return encodeURIComponent(k) + '=' + encodeURIComponent(data[k])
+        }).join('&');
+    };
+
+
+    //#endregion
+
+
+
+    //#region binding data to dropdown-list
+    //get dropdown-list data using ajax. store this using for dialog update
+
+    $.ajax({
+        type: 'POST',
+        url: '/api/Categories',
+        data: serialize({ _xsrf_token: getToken() })
+    }).done(function (res) {
+        dd_source = res['result'];
+
+        ddlObject.dataSource = dd_source;
+        ddlModal.dataSource = dd_source;
+
+    });
+
+    var ddlObject = new ej.dropdowns.DropDownList({
+        //bind the data manager instance to dataSource property
+        dataSource: dd_source,
+        //map the appropriate columns to fields property
+        fields: { text: 'name', value: 'categoryId' },
+        //set the placeholder to DropDownList input
+        placeholder: "Select an Category",
+        //sort the resulted items
+        sortOrder: 'Ascending',
+        //event select ddl
+        change: ddl_change_listener
+    });
+
+    //render the component
+    ddlObject.appendTo('#ddlelement');
+
+    //change event listener of dropdown list
+    function ddl_change_listener(args) {
+        if (!args.itemData || (typeof args.itemData == typeof 'undefined')) {
+            return;
+        }
+        var selected = args.itemData['categoryId'];
+        var url = '/api/Products/' + selected;
+        grid.dataSource.dataSource.url = url;
+        grid.refresh();
+    }
+
+    //#endregion
+
+
+
+
+
+    //#region grids
+    //#region modal
+    //event of ddl in modal
+    function ddl_modal_select(args) {
+        if (!args.itemData || (typeof args.itemData == typeof 'undefined')) {
+            return;
+        }
+        //modal_product.CategoryId = args.itemData['categoryId'];
+    }
+
+    $('body').on('click', '#updateProduct', function () {
+        //var modal = $('#viewModal');
+        //modal_product.ProductId = modal.find("#ProductId").val();
+        //modal_product.Name = modal.find("#ProductName").val();
+        modal_product.ProductId = modalView.ProductId();
+        modal_product.Name = modalView.Name();
+        modal_product.CategoryId = ddlModal.value;
+        modal_product['_xsrf_token'] = getToken();
+        $.ajax({
+            type: 'POST',
+            url: '/api/Products/update',
+            // data: serialize(modal_product),
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify(modal_product)
+        }).done(function (res) {
+            var url = '/api/Products/' + ddlModal.value;
+            grid.dataSource.dataSource.url = url;
+            grid.refresh();
+            $('#viewModal').modal('hide');
+        });
+    });
+    $('body').on('click', '#deleteProduct', function () {
+        var modal = $('#viewModal');
+        modal_product['_xsrf_token'] = getToken();
+        $.ajax({
+            type: 'POST',
+            url: '/api/Products/delete/' + modal.find("#ProductId").val(),
+            data: serialize(modal_product),
+        }).done(function (res) {
+            console.log(res);
+            //reload grid data
+            var url = '/api/Products/' + ddlModal.value;
+            grid.dataSource.dataSource.url = url;
+            grid.refresh();
+            modal.modal('hide');
+            ko.cleanNode($('#viewModal'));
+        });
+    });
+
+    //ko
+    function setData(args) {
+        this.ProductId = args.productId;
+        this.CategoryId = args.categoryId;
+        this.Name = args.name;
+    }
+
+    //view action
+    function viewClick(args) {
+        var rowObj = grid.getRowObjectFromUID(args.target.closest('.e-row').getAttribute('data-uid'));
+        var data = rowObj.data;
+        ddlModal.value = data.categoryId;
+        modalView.ProductId(data.productId)
+        modalView.Name(data.name);
+        //$('#ProductId').val(data.productId);
+        //$('#ProductName').val(data.name);
+        $('#viewModal').modal('show');
+
+        //ko.applyBindings(setData(data));
+        //console.log(data);
+    }
+    //#endregion
+
+
+
+    //custom Adaptor
+    class customAdaptor extends ej.data.UrlAdaptor {
+
+        processQuery(dm, query, hierarchyFilters) {
+            var obj = new ej.data.UrlAdaptor().processQuery(dm, query, hierarchyFilters),
+                data = ej.data.DataUtil.parse.parseJson(obj.data),
+                result = {
+                };
+            if (data.param) for (var i = 0; i < data.param.length; i++) {
+                var param = data.param[i], key = Object.keys(param)[0];
+                result[key] = param[key];
+            }
+            result.value = data
+            var token = {};
+            // addAntiForgeryToken(result);
+            token._xsrf_token = getToken();
+            var send = Object.keys(token).map(function (k) {
+                return encodeURIComponent(k) + '=' + encodeURIComponent(token[k])
+            }).join('&');
+           // debugger;
+            return {
+                type: "POST",
+                data: send,
+                url: dm.dataSource.url,
+                pvtData: dm.adaptor.pvt,
+                dataType: 'json',
+                contentType: "application/x-www-form-urlencoded; charset=UTF-8"
+            }
+        }
+        processResponse(data, ds, query, xhr, request, changes) {
+            request.data = JSON.stringify(data);
+            console.log(data);
+            return ej.data.UrlAdaptor.prototype.processResponse.call(this, data, ds, query, xhr, request, changes)
+        }
+    }
+    var data_source = new ej.data.DataManager({
+        url: 'api/Products/0',
+        requestType: "POST",
+        adaptor: new customAdaptor()
+    });
+    var grid = new ej.grids.Grid({
+        dataSource: data_source,
+        // toolbar: ['Add', 'Edit', 'Delete', 'Update', 'Cancel'],
+        //actionBegin: _actionBegin,
+        gridLines: 'Both',
+        allowPaging: true,
+        allowSelection: true,
+        allowFiltering: true,
+        allowSorting: true,
+        ////editSettings: { allowEditing: true, allowAdding: true, allowDeleting: true },
+        editSettings: { allowEditing: false, allowAdding: false, allowDeleting: false },
+        enableVirtualization: true,
+        filterSettings: { type: 'Menu' },
+        selectionSettings: { persistSelection: true, type: 'Multiple', checkboxOnly: false },
+        enableHover: true,
+        height: 480,
+        //rowHeight: 38,
+        //load: () => {
+        //    var rowHeight = grid.getRowHeight();  //height of the each row
+        //    var gridHeight = grid.height;
+        //    var pageSize = grid.pageSettings.pageSize;   //initial page size
+        //    var pageResize = (gridHeight - (pageSize * rowHeight)) / rowHeight; //new page size is obtained here
+        //    grid.pageSettings.pageSize = pageSize + Math.round(pageResize);
+        //},
+        columns: [
+            //{
+            //    type: 'checkbox', allowFiltering: false, allowSorting: false, width: '60'
+            //},
+            {
+                field: 'productId', visible: false, headerText: 'Product ID', isPrimaryKey: true, width: '130'
+            },
+            {
+                field: 'name', headerText: 'Name', width: '200', clipMode: 'EllipsisWithTooltip',
+                filter: { type: 'CheckBox' }
+            }, {
+                headerText: 'Commands', width: 120, commands: [{
+                    buttonOption: { content: 'View', cssClass: 'e-primary', click: viewClick }
+                }]
+            }
+        ],
+        ClientSideEvents: function (args) {
+            console.log(args);
+        }
+
+    });
+
+    grid.appendTo("#Grid");
+
+    //#endregion
+</script>
+
