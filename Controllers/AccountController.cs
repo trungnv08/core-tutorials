@@ -86,7 +86,10 @@ namespace coreTutorials.Controllers
                             //IsPersistent = true, // for 'remember me' feature
                             //ExpiresUtc = DateTime.UtcNow.AddMinutes(1)
                         });
-
+                if (string.IsNullOrEmpty(ReturnUrl))
+                {
+                    ReturnUrl = "/Account";
+                }
                 return Redirect($"{ReturnUrl}");
             }
             var count = SessionHelpers.getObject<int>(HttpContext.Session, "login_failed");
