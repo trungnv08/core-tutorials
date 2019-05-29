@@ -25,9 +25,11 @@ namespace coreTutorials.Controllers
             var isValid = (exp != null) && !string.IsNullOrWhiteSpace(exp.Value) && DateTime.UtcNow < DateTime.Parse(exp.Value);
             if (isValid && (username != null) && !string.IsNullOrWhiteSpace(username.Value))
             {
+              //  SessionHelpers.SetObject<bool>(context.HttpContext.Session, "_isLogedin", true);
             }
             else
             {
+             //   SessionHelpers.SetObject<bool>(context.HttpContext.Session, "_isLogedin", false);
                 context.RejectPrincipal();
                 await context.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             }

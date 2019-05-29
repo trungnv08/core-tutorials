@@ -15,6 +15,7 @@ D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\c
 D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\coreTutorials.RazorCoreGenerate.cache
 D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\Razor\Views\Account\Index.g.cshtml.cs
 D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\Razor\Views\Account\Login.g.cshtml.cs
+D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\Razor\Views\Account\Register.g.cshtml.cs
 D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\Razor\Views\Categories\Create.g.cshtml.cs
 D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\Razor\Views\Categories\Delete.g.cshtml.cs
 D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\Razor\Views\Categories\Details.g.cshtml.cs
@@ -25,7 +26,9 @@ D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\R
 D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\Razor\Views\Home\Index.g.cshtml.cs
 D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\Razor\Views\Home\Privacy.g.cshtml.cs
 D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\Razor\Views\listedModels.g.cshtml.cs
+D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\Razor\Views\Manager\Categories.g.cshtml.cs
 D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\Razor\Views\Manager\Index.g.cshtml.cs
+D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\Razor\Views\Manager\Products.g.cshtml.cs
 D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\Razor\Views\Products\Index.g.cshtml.cs
 D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\Razor\Views\Shared\Error.g.cshtml.cs
 D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\Razor\Views\Shared\_CookieConsentPartial.g.cshtml.cs
@@ -39,7 +42,4 @@ D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\c
 D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\coreTutorials.dll
 D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\coreTutorials.pdb
 D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\coreTutorials.csproj.CopyComplete
-D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\Razor\Views\Account\Register.g.cshtml.cs
 D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\coreTutorials.csprojAssemblyReference.cache
-D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\Razor\Views\Manager\Categories.g.cshtml.cs
-D:\trung-sources\project\core-tutorials\core-tutorials\obj\Debug\netcoreapp2.1\Razor\Views\Manager\Products.g.cshtml.cs

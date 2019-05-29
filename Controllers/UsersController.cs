@@ -9,6 +9,7 @@ using coreTutorials.DAL;
 using coreTutorials.Models;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.Extensions.Primitives;
+using MongoDB.Driver;
 
 namespace coreTutorials.Controllers
 {
@@ -18,127 +19,42 @@ namespace coreTutorials.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly MyDbContext _context;
-        private readonly IAntiforgery _antiforgery;
-        public UsersController(MyDbContext context, IAntiforgery antiforgery)
+        private readonly MongoDbContext _dbContext;
+        //private readonly MyDbContext _context;
+        //private readonly IAntiforgery _antiforgery;
+        public UsersController(MongoDbContext context)
         {
-            _context = context;
-            _antiforgery = antiforgery;
+            _dbContext = context;
         }
 
         // GET: api/Users
         [HttpPost]
         public Dto GetUsers()
         {
-            _antiforgery.ValidateRequestAsync(HttpContext);
-            StringValues xsrfToken;
-            bool trydata = HttpContext.Request.Headers.TryGetValue("x-xsrf-token-header", out xsrfToken);
-            //.SingleOrDefault(header => header.Key.Equals("X-XSRF-TOKEN"));
-            var token = _antiforgery.GetAndStoreTokens(HttpContext);
-            if (token.RequestToken == xsrfToken.FirstOrDefault())
-            {
-                return new Dto { result = _context.Users, count = _context.Users.Count() };
 
-            }
-            //Response.Headers.Add("Content-Type", "application/json");
 
-            return new Dto { result = _context.Users, count = _context.Users.Count() };
-        }
-        //[HttpGet("{top}")]
-        //public IEnumerable<User> GetUsers(int top)
-        //{
-        //    return _context.Users.Take(top).ToList();
-        //}
+            var data = new Dto { result = _dbContext.Users.Find(user => true).ToEnumerable() };
+            data.count = data.result.Count();
 
-        // GET: api/Users/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetUser([FromRoute] long id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            return data;
 
-            var user = await _context.Users.FindAsync(id);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(user);
         }
 
-        //// PUT: api/Users/5
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> PutUser([FromRoute] long id, [FromBody] Users user)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
-
-        //    if (id != user.UserId)
-        //    {
-        //        return BadRequest();
-        //    }
-
-        //    _context.Entry(user).State = EntityState.Modified;
-
-        //    try
-        //    {
-        //        await _context.SaveChangesAsync();
-        //    }
-        //    catch (DbUpdateConcurrencyException)
-        //    {
-        //        if (!UserExists(id))
-        //        {
-        //            return NotFound();
-        //        }
-        //        else
-        //        {
-        //            throw;
-        //        }
-        //    }
-
-        //    return NoContent();
-        //}
 
         // POST: api/Users
         [HttpPost]
         [Route("/add")]
-        public async Task<IActionResult> PostUser([FromBody] Users user)
+        public void PostUser([FromBody] Users user)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
 
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetUser", new { id = user.UserId }, user);
+            _dbContext.Users.InsertOne(user);
         }
 
         // DELETE: api/Users/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser([FromRoute] long id)
+        public void DeleteUser([FromRoute] long id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
 
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
-
-            return Ok(user);
         }
 
         //private bool UserExists(long id)

@@ -18,6 +18,8 @@ using Newtonsoft.Json.Serialization;
 using Microsoft.AspNetCore.Antiforgery;
 using FluentValidation.AspNetCore;
 using coreTutorials.Models;
+using Microsoft.Extensions.Caching.Distributed;
+using System.Text;
 
 namespace core_tutorials
 {
@@ -100,6 +102,9 @@ namespace core_tutorials
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
+
+           
+
             //add antiforgery token to cookies
             app.Use(next => context =>
             {

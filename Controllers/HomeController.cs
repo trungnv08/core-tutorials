@@ -10,6 +10,7 @@ namespace coreTutorials.Controllers
     {
         public IActionResult Index()
         {
+            var data = HttpContext.Session.Keys.ToArray();
             return View();
         }
     }

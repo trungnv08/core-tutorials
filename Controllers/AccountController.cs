@@ -41,7 +41,7 @@ namespace coreTutorials.Controllers
                 return View("Register", user);
             }
             _dbContext.Users.InsertOne(user);
-            TempData["notice"] = "Person successfully created";
+            TempData["notice"] = "User successfully created";
             return RedirectToAction("Index");
         }
         [AllowAnonymous]
@@ -117,7 +117,8 @@ namespace coreTutorials.Controllers
         {
             await HttpContext.SignOutAsync(scheme: CookieAuthenticationDefaults.AuthenticationScheme);
             //clear session
-            SessionHelpers.SetObject<bool>(HttpContext.Session, "_isLogedin", false);
+            HttpContext.Session.Clear();
+           // SessionHelpers.SetObject<bool>(HttpContext.Session, "_isLogedin", false);
             return Redirect("/Account/Login");
         }
         [Authorize]
