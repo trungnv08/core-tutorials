@@ -77,7 +77,8 @@ namespace core_tutorials
             });
             //add cutom handle cookies validaton
             services.AddScoped<CookieActionhandle>();
-
+            //add MongoDbContext
+            services.AddScoped<MongoDbContext>();
             //config webapp connect to SQL server
             var connectionString = Configuration.GetConnectionString("local_db");
             services.AddDbContext<MyDbContext>(options => options.UseSqlServer(connectionString));

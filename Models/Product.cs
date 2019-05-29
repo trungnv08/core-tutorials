@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -10,14 +11,17 @@ namespace coreTutorials.Models
 {
     public class Product
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Int64 ProductId { get; set; }
-        public String Name { get; set; }
-        [ForeignKey("Categories")]
-        public Int64 CategoryId { get; set; }
-
+        //   [Key]
+        //   [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [BsonId]
+        [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
+        public string ProductId { get; set; }
+        [BsonElement("name")]
+        public string Name { get; set; }
+        [BsonElement("categoryId")]
+        public string CategoryId { get; set; }
         [JsonIgnore]
+        [BsonIgnore]
         public virtual Category Category { get; set; }
     }
 }
